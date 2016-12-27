@@ -14,7 +14,7 @@ class Foreign
             $uniqueId = uniqid('opt', true).md5(mt_rand(1, 1000));
             $html .=
                 '<div class="col-md-'.$colsSize.' col-xs-12">'.
-                \Form::checkbox($name.'[]', $key, in_array($key, (array)$value) ? true : false, ['id' => $uniqueId]).
+                \Form::checkbox($name.'[]', $key, in_array($key, (array)$value), ['id' => $uniqueId]).
                 \Form::label($uniqueId, $option).
                 '</div>';
         }
