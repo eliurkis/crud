@@ -5,6 +5,7 @@ namespace Eliurkis\Crud;
 use DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Database\QueryException;
 
 class CrudController extends Controller
@@ -181,7 +182,8 @@ class CrudController extends Controller
     protected function filters($entity, $request)
     {
         if ($request->query('filter')) {
-            foreach ($request->query('filter') as $field => $value) {
+            $filters = is_array($request->query('filter')) ? $request->query('filter') : [];
+            foreach ($filters as $field => $value) {
                 $entity = $entity->where($field, $value);
             }
         }
@@ -256,7 +258,7 @@ class CrudController extends Controller
         if ($request->get('q') != '') {
             $searchableCols = isset($this->searchable['columns']) ? $this->searchable['columns'] : $this->searchable;
 
-            $entity = $entity->where(function ($query) use ($request, $searchableCols) {
+            $entity = $entity->where(function (Builder $query) use ($request, $searchableCols) {
                 foreach ($searchableCols as $field) {
                     $query->orWhere($field, 'like', '%'.$request->get('q').'%');
                 }

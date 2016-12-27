@@ -1,9 +1,9 @@
 # Laravel CRUD Generator
 
-[![Latest Version on Packagist][ico-version]][link-packagist]
+[![Latest Version](https://img.shields.io/github/release/eliurkis/crud.svg?style=flat-square)](https://github.com/eliurkis/crud/releases)
 [![Software License][ico-license]](LICENSE.md)
 [![Build Status][ico-travis]][link-travis]
-[![Coverage Status][ico-scrutinizer]][link-scrutinizer]
+[![SensioLabs Insight](https://img.shields.io/sensiolabs/i/6a085926-22ff-4c51-98f1-98044c411abe.svg?style=flat-square)](https://insight.sensiolabs.com/projects/6a085926-22ff-4c51-98f1-98044c411abe)
 [![Quality Score][ico-code-quality]][link-code-quality]
 [![StyleCI](https://styleci.io/repos/77415299/shield?branch=master)](https://styleci.io/repos/77415299)
 [![Total Downloads][ico-downloads]][link-downloads]
