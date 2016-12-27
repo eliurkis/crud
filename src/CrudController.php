@@ -3,9 +3,9 @@
 namespace Eliurkis\Crud;
 
 use DB;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\QueryException;
-use Illuminate\Http\Request;
 
 class CrudController extends Controller
 {
@@ -116,7 +116,7 @@ class CrudController extends Controller
 
     public function edit($id)
     {
-        if (!$this->entityInstance) {
+        if (! $this->entityInstance) {
             $this->entityInstance = $this->entity->findOrFail($id);
         }
 
@@ -290,7 +290,7 @@ class CrudController extends Controller
 
         foreach ($foreignRelations as $foreignRelation) {
             $values = $request->get($foreignRelation);
-            $row->$foreignRelation()->sync((array)$values);
+            $row->$foreignRelation()->sync((array) $values);
         }
     }
 
@@ -314,7 +314,7 @@ class CrudController extends Controller
         $links = ['index', 'create', 'store'];
 
         foreach ($links as $link) {
-            if (!isset($this->links[$link])) {
+            if (! isset($this->links[$link])) {
                 $this->links[$link] = route($this->route.'.'.$link);
             }
         }
@@ -348,7 +348,7 @@ class CrudController extends Controller
         $config['cols'] = isset($config['cols']) ? $config['cols'] : 1;
 
         // Get foreign values
-        if (!count($config['options']) && isset($config['entity'])) {
+        if (! count($config['options']) && isset($config['entity'])) {
             $config['options'] = $config['entity']::get()
                 ->lists($config['field_value'], $config['field_key'])
                 ->toArray();
@@ -380,7 +380,7 @@ class CrudController extends Controller
     protected function prepareField($name, $properties = [])
     {
         // Init
-        if (!$properties) {
+        if (! $properties) {
             $properties = $this->fields[$name];
         }
 
@@ -397,8 +397,8 @@ class CrudController extends Controller
 
         // Define field type class namespace
         $className = '\Eliurkis\Crud\FieldTypes\\'.ucfirst($properties['type']);
-        if (!class_exists($className)) {
-            return null;
+        if (! class_exists($className)) {
+            return;
         }
 
         if ($properties['type'] == 'foreign' || $properties['type'] == 'select') {
