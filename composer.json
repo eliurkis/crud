@@ -15,7 +15,8 @@
     "license": "MIT",
     "require": {
         "php": ">=7.0",
-        "laravelcollective/html": "^5.2"
+        "laravelcollective/html": "^5.2",
+        "illuminate/database": "~5.3.23"
     },
     "autoload": {
         "psr-4": {
