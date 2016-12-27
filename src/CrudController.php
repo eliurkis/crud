@@ -181,7 +181,8 @@ class CrudController extends Controller
     protected function filters($entity, $request)
     {
         if ($request->query('filter')) {
-            foreach ($request->query('filter') as $field => $value) {
+            $filters = is_array($request->query('filter')) ? $request->query('filter') : [];
+            foreach ($filters as $field => $value) {
                 $entity = $entity->where($field, $value);
             }
         }
