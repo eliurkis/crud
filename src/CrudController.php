@@ -134,9 +134,9 @@ class CrudController extends Controller
 
     public function update(Request $request, $id)
     {
-        $validations = $this->prepareValidation();
-        if ($validations) {
-            $this->validate($request, $validations);
+        $validate = $this->prepareValidation();
+        if ($validate['rules']) {
+            $this->validate($request, $validate['rules'], $validate['messages'], $validate['customAttributes']);
         }
 
         DB::beginTransaction();
@@ -159,7 +159,7 @@ class CrudController extends Controller
         DB::commit();
 
         return redirect()
-            ->route($this->route.'.index', $this->getParamsFilters())
+            ->route($this->route.'.index', $this->getParamsFilters($row))
             ->with('success', isset($this->textsGeneral['save_action'])
                 ? $this->textsGeneral['save_action']
                 : trans('eliurkis::crud.save_action'));
@@ -204,17 +204,20 @@ class CrudController extends Controller
                 $urlParams = \Input::query();
 
                 // Default Value
-                $this->fields[$filter]['config']['default_value'] = isset($urlParams['filter'][$filter]) ? $urlParams['filter'][$filter] : null;
+                $this->fields[$filter]['config']['default_value'] = isset($urlParams['filter'][$filter])
+                    ? $urlParams['filter'][$filter]
+                    : null;
 
                 // Create URL
                 if (isset($urlParams['filter'][$filter])) {
                     unset($urlParams['filter'][$filter]);
                 }
-                $this->fields[$filter]['attributes']['data-filter-url'] = route($this->route.'.index', $urlParams).(count($urlParams) ? '&' : '?');
+                $this->fields[$filter]['attributes']['data-filter-url'] = route($this->route.'.index', $urlParams)
+                    .(count($urlParams) ? '&' : '?');
 
                 // Create array
                 $this->action = 'list';
-                $this->htmlFilters[$filter] = $this->fieldtype_select($filter);
+                $this->htmlFilters[$filter] = $this->prepareField($filter);
             }
         }
     }
@@ -291,31 +294,7 @@ class CrudController extends Controller
         }
     }
 
-    protected function prepareMultipleFields($name)
-    {
-        $properties = $this->fields[$name];
-        $config = isset($properties['config']) ? $properties['config'] : [];
-        $config['options'] = isset($config['options']) ? $config['options'] : [];
-        $config['cols'] = isset($config['cols']) ? $config['cols'] : 1;
-
-        if (! count($config['options']) && isset($config['entity'])) {
-            $config['options'] = $config['entity']::get()
-                ->lists($config['field_value'], $config['field_key'])
-                ->toArray();
-        }
-
-        if ($this->action == 'list' && isset($this->fields[$name]['config']['filter_no_selection'])) {
-            $config['options'] = array_merge([
-                '-1' => $this->fields[$name]['config']['filter_no_selection'], ],
-                $config['options']
-            );
-        }
-
-        $properties['config'] = $config;
-        $this->fields[$name] = $properties;
-    }
-
-    protected function getParamsFilters()
+    protected function getParamsFilters($row)
     {
         $params = [];
 
@@ -361,6 +340,32 @@ class CrudController extends Controller
         return $validations;
     }
 
+    protected function prepareRelationalFields($name)
+    {
+        // Default values
+        $config = isset($this->fields[$name]['config']) ? $this->fields[$name]['config'] : [];
+        $config['options'] = isset($config['options']) ? $config['options'] : [];
+        $config['cols'] = isset($config['cols']) ? $config['cols'] : 1;
+
+        // Get foreign values
+        if (! count($config['options']) && isset($config['entity'])) {
+            $config['options'] = $config['entity']::get()
+                ->lists($config['field_value'], $config['field_key'])
+                ->toArray();
+        }
+
+        // No selection for filters
+        if ($this->action == 'list' && isset($config['filter_no_selection'])) {
+            $config['options'] = array_merge([
+                '-1' => $config['filter_no_selection'],
+            ], $config['options']);
+        }
+
+        $this->fields[$name]['config'] = $config;
+
+        return $this->fields[$name];
+    }
+
     protected function prepareFields()
     {
         if ($this->entityInstance) {
@@ -368,19 +373,57 @@ class CrudController extends Controller
         }
 
         foreach ($this->fields as $name => $properties) {
-            $this->fields[$name]['config'] = isset($properties['config']) ? $properties['config'] : [];
-            $this->fields[$name]['attributes'] = isset($properties['attributes']) ? $properties['attributes'] : [];
-            $this->fields[$name]['attributes']['class'] = 'form-control';
-
-            $value = $this->entityInstance
-                ? $this->entityInstance->$name
-                : isset($config['default_value']) ? $config['default_value'] : null;
-
-            $className = '\Eliurkis\Crud\FieldTypes\\'.ucfirst($properties['type']);
-
-            $this->fields[$name]['html'] = class_exists($className)
-                ? $className::prepare($name, $value, $this->fields[$name])
-                : null;
+            $this->fields[$name]['html'] = $this->prepareField($name, $properties);
         }
+    }
+
+    protected function prepareField($name, $properties = [])
+    {
+        // Init
+        if (! $properties) {
+            $properties = $this->fields[$name];
+        }
+
+        $this->fields[$name]['config'] = isset($properties['config']) ? $properties['config'] : [];
+        $this->fields[$name]['attributes'] = isset($properties['attributes']) ? $properties['attributes'] : [];
+        $this->fields[$name]['attributes']['class'] = 'form-control';
+        $this->fields[$name]['html'] = null;
+
+        $config = $this->fields[$name]['config'];
+
+        $value = $this->entityInstance
+            ? $this->entityInstance->$name
+            : (isset($config['default_value']) ? $config['default_value'] : null);
+
+        // Define field type class namespace
+        $className = '\Eliurkis\Crud\FieldTypes\\'.ucfirst($properties['type']);
+        if (! class_exists($className)) {
+            return;
+        }
+
+        if ($properties['type'] == 'foreign' || $properties['type'] == 'select') {
+            $properties = $this->prepareRelationalFields($name);
+
+            if ($properties['type'] == 'foreign' && $this->entityInstance) {
+                $value = $this->entityInstance->{$config['rel']}->lists('id')->toArray();
+            }
+
+            if ($properties['type'] == 'select') {
+                $properties['attributes']['class'] = 'form-control chosen-select-width';
+            }
+
+            return $className::prepare(
+                $name,
+                $properties['config']['options'],
+                $value,
+                $properties
+            );
+        }
+
+        return $className::prepare(
+            $name,
+            $value,
+            $this->fields[$name]
+        );
     }
 }
