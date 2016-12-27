@@ -2,8 +2,8 @@
 
 namespace Eliurkis\Crud;
 
-use Illuminate\Support\ServiceProvider;
 use Route;
+use Illuminate\Support\ServiceProvider;
 
 class CrudServiceProvider extends ServiceProvider
 {
