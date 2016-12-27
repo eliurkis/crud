@@ -5,6 +5,7 @@
 [![Build Status][ico-travis]][link-travis]
 [![Coverage Status][ico-scrutinizer]][link-scrutinizer]
 [![Quality Score][ico-code-quality]][link-code-quality]
+[![StyleCI](https://styleci.io/repos/77415299/shield?branch=master)](https://styleci.io/repos/77415299)
 [![Total Downloads][ico-downloads]][link-downloads]
 
 A CRUD Generator for Laravel 5.3 and up.
