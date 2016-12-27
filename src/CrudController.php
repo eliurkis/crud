@@ -89,10 +89,7 @@ class CrudController extends Controller
 
     public function store(Request $request)
     {
-        $validate = $this->prepareValidation();
-        if ($validate['rules']) {
-            $this->validate($request, $validate['rules'], $validate['messages'], $validate['customAttributes']);
-        }
+        $this->validateRequest($request);
 
         DB::beginTransaction();
 
@@ -134,10 +131,7 @@ class CrudController extends Controller
 
     public function update(Request $request, $id)
     {
-        $validate = $this->prepareValidation();
-        if ($validate['rules']) {
-            $this->validate($request, $validate['rules'], $validate['messages'], $validate['customAttributes']);
-        }
+        $this->validateRequest($request);
 
         DB::beginTransaction();
 
@@ -178,6 +172,12 @@ class CrudController extends Controller
 
     /* Private Actions */
 
+    /**
+     * @param $entity
+     * @param Request $request
+     *
+     * @return mixed
+     */
     protected function filters($entity, $request)
     {
         if ($request->query('filter')) {
@@ -222,6 +222,12 @@ class CrudController extends Controller
         }
     }
 
+    /**
+     * @param $entity
+     * @param Request $request
+     *
+     * @return mixed
+     */
     protected function paginate($entity, $request)
     {
         $rows = $entity->paginate($this->paginate);
@@ -239,6 +245,12 @@ class CrudController extends Controller
         return $rows;
     }
 
+    /**
+     * @param $entity
+     * @param Request $request
+     *
+     * @return mixed
+     */
     protected function search($entity, $request)
     {
         if ($request->get('q') != '') {
@@ -284,6 +296,10 @@ class CrudController extends Controller
         return $fields;
     }
 
+    /**
+     * @param object $row
+     * @param Request $request
+     */
     protected function updateForeignRelations($row, $request)
     {
         $foreignRelations = $this->getForeignRelationsFields();
@@ -322,7 +338,10 @@ class CrudController extends Controller
         return $this->links;
     }
 
-    protected function prepareValidation()
+    /**
+     * @param Request $request
+     */
+    protected function validateRequest($request)
     {
         $validations = [
             'rules'            => [],
@@ -337,7 +356,14 @@ class CrudController extends Controller
             }
         }
 
-        return $validations;
+        if ($validations['rules']) {
+            $this->validate(
+                $request,
+                $validations['rules'],
+                $validations['messages'],
+                $validations['customAttributes']
+            );
+        }
     }
 
     protected function prepareRelationalFields($name)
