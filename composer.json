@@ -1,0 +1,31 @@
+{
+    "name": "eliurkis/crud",
+    "description": "CRUD Generator",
+    "homepage": "https://github.com/eliurkis/crud",
+    "authors": [
+        {
+            "name": "Eliurkis Diaz",
+            "email": "eliurkis@gmail.com"
+        }
+    ],
+    "keywords": [
+        "crud",
+        "laravel"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=7.0",
+        "laravelcollective/html": "^5.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Eliurkis\\Crud\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Eliurkis\\Crud\\Test\\": "tests"
+        }
+    },
+    "minimum-stability": "stable"
+}
