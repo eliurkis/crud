@@ -1,4 +1,4 @@
-# CRUD Generator
+# Laravel CRUD Generator
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Software License][ico-license]](LICENSE.md)
@@ -8,7 +8,7 @@
 [![StyleCI](https://styleci.io/repos/77415299/shield?branch=master)](https://styleci.io/repos/77415299)
 [![Total Downloads][ico-downloads]][link-downloads]
 
-A CRUD Generator for Laravel 5.3 and up.
+A Laravel CRUD Generator.
 
 ## Install
 
