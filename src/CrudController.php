@@ -76,7 +76,7 @@ class CrudController extends Controller
 
     public function create()
     {
-        $this->prepare_fields();
+        $this->prepareFields();
 
         return view('crud::create')
             ->with('type', 'create')
@@ -120,7 +120,7 @@ class CrudController extends Controller
             $this->entityInstance = $this->entity->findOrFail($id);
         }
 
-        $this->prepare_fields();
+        $this->prepareFields();
 
         return view('crud::create')
             ->with('type', 'edit')
@@ -350,6 +350,7 @@ class CrudController extends Controller
             'messages'         => [],
             'customAttributes' => [],
         ];
+
         foreach ($this->fields as $field => $options) {
             if (isset($options['validation'])) {
                 $validations['rules'][$field] = $options['validation'];
@@ -360,9 +361,7 @@ class CrudController extends Controller
         return $validations;
     }
 
-    /* Fields Types */
-
-    protected function prepare_fields()
+    protected function prepareFields()
     {
         if ($this->entityInstance) {
             \Form::model($this->entityInstance);
@@ -373,120 +372,15 @@ class CrudController extends Controller
             $this->fields[$name]['attributes'] = isset($properties['attributes']) ? $properties['attributes'] : [];
             $this->fields[$name]['attributes']['class'] = 'form-control';
 
-            // Determine the value
-            if ($this->entityInstance) {
-                $activeValue = $this->entityInstance->$name;
-            } else {
-                $activeValue = isset($config['default_value']) ? $config['default_value'] : null;
-            }
+            $value = $this->entityInstance
+                ? $this->entityInstance->$name
+                : isset($config['default_value']) ? $config['default_value'] : null;
 
-            $fieldTypeMethod = 'fieldtype_'.$properties['type'];
             $className = '\Eliurkis\Crud\FieldTypes\\'.ucfirst($properties['type']);
 
-            if (class_exists($className)) {
-                $this->fields[$name]['html'] = $className::prepare(
-                    $name,
-                    $this->fields[$name],
-                    $this->entityInstance
-                        ? $this->entityInstance->$name
-                        : (isset($config['default_value']) ? $config['default_value'] : null)
-                );
-            } elseif (method_exists($this, $fieldTypeMethod)) {
-                $this->fields[$name]['html'] = $this->$fieldTypeMethod($name);
-            } else {
-                $this->fields[$name]['html'] = $this->fieldtype_text($name);
-            }
+            $this->fields[$name]['html'] = class_exists($className)
+                ? $className::prepare($name, $value, $this->fields[$name])
+                : null;
         }
-    }
-
-    protected function fieldtype_select($name)
-    {
-        // Init
-        $this->prepareMultipleFields($name);
-        $properties = $this->fields[$name];
-        $properties['attributes'] = isset($properties['attributes']) ? $properties['attributes'] : [];
-        $properties['attributes']['class'] = 'form-control chosen-select-width';
-        $config = isset($properties['config']) ? $properties['config'] : [];
-
-        // Determine the value
-        if ($this->entityInstance) {
-            $activeValue = $this->entityInstance->$name;
-        } else {
-            $activeValue = isset($config['default_value']) ? $config['default_value'] : null;
-        }
-
-        return \Form::select(
-            $name,
-            $this->fields[$name]['config']['options'],
-            \Input::old($name, $activeValue),
-            $properties['attributes']
-        );
-    }
-
-    protected function fieldtype_radio($name)
-    {
-        // Init
-        $this->prepareMultipleFields($name);
-        $properties = $this->fields[$name];
-        $config = isset($properties['config']) ? $properties['config'] : [];
-
-        // Determine the value
-        if ($this->entityInstance) {
-            $activeValue = $this->entityInstance->$name;
-        } else {
-            $activeValue = isset($config['default_value']) ? $config['default_value'] : null;
-        }
-
-        $colsSize = 12 / $config['cols'];
-        $html = '<div class="row">';
-        foreach ($config['options'] as $key => $value) {
-            $uniqueId = uniqid('opt', true).md5(mt_rand(1, 1000));
-            $html .=
-                '<div class="col-md-'.$colsSize.' col-xs-12">'.
-                \Form::radio($name, $key, $activeValue === $key, ['id' => $uniqueId]).
-                \Form::label($uniqueId, $value).
-                '</div>';
-        }
-        $html .= '</div>';
-
-        return $html;
-    }
-
-    protected function fieldtype_foreign($name)
-    {
-        // Init
-        $checkedValues = [];
-        $properties = $this->fields[$name];
-        $config = isset($properties['config']) ? $properties['config'] : [];
-
-        $properties['options'] = isset($properties['options']) ? $properties['options'] : [];
-        $config['cols'] = isset($config['cols']) ? $config['cols'] : 1;
-
-        if (!count($properties['options']) && isset($config['entity'])) {
-            $properties['options'] = $config['entity']::get()
-                ->lists($config['field_value'], $config['field_key'])
-                ->toArray();
-        }
-
-        if ($this->entityInstance) {
-            $checkedValues = $this->entityInstance->{$config['rel']}->lists('id')->toArray();
-        }
-
-        $colsSize = 12 / $config['cols'];
-        $html = '<div class="row">';
-        foreach ($properties['options'] as $key => $value) {
-            $uniqueId = uniqid('opt', true).md5(mt_rand(1, 1000));
-            $html .=
-                '<div class="col-md-'.$colsSize.' col-xs-12">'.
-                \Form::checkbox($name.'[]', $key, in_array($key, $checkedValues) ? true : false, ['id' => $uniqueId]).
-                \Form::label($uniqueId, $value).
-                '</div>';
-        }
-        $html .= '</div>';
-
-        $properties['config'] = $config;
-        $this->fields[$name] = $properties;
-
-        return $html;
     }
 }

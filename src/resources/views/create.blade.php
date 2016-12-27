@@ -11,7 +11,7 @@
         {!! Form::model($data, ['route' => [$route.'.update', $data->id], 'class' => 'form-horizontal', 'id' => 'frm-'.$route.'-update']) !!}
         {!! method_field('put') !!}
     @else
-        {!! Form::open(['url' => $links['store'], 'class' => 'form-horizontal', 'id' => 'frm-'.$route.'-store']) !!}
+        {!! Form::open(['route' => [$route.'.store'], 'class' => 'form-horizontal', 'id' => 'frm-'.$route.'-store']) !!}
     @endif
     <div id="form-manage" class="row">
         @foreach($fields as $name=>$field)
@@ -30,7 +30,9 @@
         <div class="col-md-12">
             <div class="form-group">
                 <div class="text-center">
-                    <button class="btn btn-primary" type="submit" style="margin-right: 10px;"><i class="fa fa-check"></i> {{ $t['save'] or trans('eliurkis::crud.save') }}</button>
+                    <button class="btn btn-primary" type="submit" style="margin-right: 10px;">
+                        <i class="fa fa-check"></i> {{ $t['save'] or trans('eliurkis::crud.save') }}
+                    </button>
                     <a href="{{ $links['index'] }}" class="btn btn-white"><i class="fa fa-remove"></i> {{ $t['cancel'] or trans('eliurkis::crud.cancel') }}</a>
                 </div>
             </div>
