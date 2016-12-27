@@ -2,10 +2,10 @@
 
 namespace Eliurkis\Crud;
 
-use App\Http\Controllers\Controller;
 use DB;
-use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Database\QueryException;
 
 class CrudController extends Controller
 {
@@ -116,7 +116,7 @@ class CrudController extends Controller
 
     public function edit($id)
     {
-        if (!$this->entityInstance) {
+        if (! $this->entityInstance) {
             $this->entityInstance = $this->entity->findOrFail($id);
         }
 
@@ -287,7 +287,7 @@ class CrudController extends Controller
 
         foreach ($foreignRelations as $foreignRelation) {
             $values = $request->get($foreignRelation);
-            $row->$foreignRelation()->sync((array)$values);
+            $row->$foreignRelation()->sync((array) $values);
         }
     }
 
@@ -298,7 +298,7 @@ class CrudController extends Controller
         $config['options'] = isset($config['options']) ? $config['options'] : [];
         $config['cols'] = isset($config['cols']) ? $config['cols'] : 1;
 
-        if (!count($config['options']) && isset($config['entity'])) {
+        if (! count($config['options']) && isset($config['entity'])) {
             $config['options'] = $config['entity']::get()
                 ->lists($config['field_value'], $config['field_key'])
                 ->toArray();
@@ -306,7 +306,7 @@ class CrudController extends Controller
 
         if ($this->action == 'list' && isset($this->fields[$name]['config']['filter_no_selection'])) {
             $config['options'] = array_merge([
-                '-1' => $this->fields[$name]['config']['filter_no_selection']],
+                '-1' => $this->fields[$name]['config']['filter_no_selection'], ],
                 $config['options']
             );
         }
@@ -335,7 +335,7 @@ class CrudController extends Controller
         $links = ['index', 'create', 'store'];
 
         foreach ($links as $link) {
-            if (!isset($this->links[$link])) {
+            if (! isset($this->links[$link])) {
                 $this->links[$link] = route($this->route.'.'.$link);
             }
         }
@@ -462,7 +462,7 @@ class CrudController extends Controller
         $properties['options'] = isset($properties['options']) ? $properties['options'] : [];
         $config['cols'] = isset($config['cols']) ? $config['cols'] : 1;
 
-        if (!count($properties['options']) && isset($config['entity'])) {
+        if (! count($properties['options']) && isset($config['entity'])) {
             $properties['options'] = $config['entity']::get()
                 ->lists($config['field_value'], $config['field_key'])
                 ->toArray();
