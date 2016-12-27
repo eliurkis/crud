@@ -3,9 +3,9 @@
 namespace Eliurkis\Crud;
 
 use DB;
-use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Database\QueryException;
 
 class CrudController extends Controller
