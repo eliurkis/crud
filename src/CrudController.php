@@ -5,8 +5,8 @@ namespace Eliurkis\Crud;
 use DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\QueryException;
+use Illuminate\Database\Eloquent\Builder;
 
 class CrudController extends Controller
 {
