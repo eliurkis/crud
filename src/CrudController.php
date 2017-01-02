@@ -40,6 +40,17 @@ class CrudController extends Controller
     ];
     protected $links = [];
 
+    public function __construct($entity, $config = [])
+    {
+        $this->entity = $entity;
+
+        $config = count($config) ? $config : config('crud.' . $this->route);
+
+        foreach ($config as $key => $value) {
+            $this->$key = $value;
+        }
+    }
+
     public function index(Request $request)
     {
         $entity = $this->entity;

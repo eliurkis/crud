@@ -35,7 +35,6 @@ class CrudServiceProvider extends ServiceProvider
     public function register()
     {
         include __DIR__.'/routes.php';
-        $this->app->make(\Eliurkis\Crud\CrudController::class);
         $this->app->register(\Collective\Html\HtmlServiceProvider::class);
     }
 
