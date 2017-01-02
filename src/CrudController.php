@@ -44,7 +44,7 @@ class CrudController extends Controller
     {
         $this->entity = $entity;
 
-        $config = count($config) ? $config : config('crud.' . $this->route);
+        $config = count($config) ? $config : config('crud.'.$this->route);
 
         foreach ($config as $key => $value) {
             $this->$key = $value;
@@ -185,7 +185,7 @@ class CrudController extends Controller
     /* Private Actions */
 
     /**
-     * @param $entity
+     * @param         $entity
      * @param Request $request
      *
      * @return mixed
@@ -236,7 +236,7 @@ class CrudController extends Controller
     }
 
     /**
-     * @param $entity
+     * @param         $entity
      * @param Request $request
      *
      * @return mixed
@@ -259,7 +259,7 @@ class CrudController extends Controller
     }
 
     /**
-     * @param $entity
+     * @param         $entity
      * @param Request $request
      *
      * @return mixed
@@ -310,7 +310,7 @@ class CrudController extends Controller
     }
 
     /**
-     * @param object $row
+     * @param object  $row
      * @param Request $request
      */
     protected function updateForeignRelations($row, $request)
