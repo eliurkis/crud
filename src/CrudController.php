@@ -46,8 +46,10 @@ class CrudController extends Controller
 
         $config = count($config) ? $config : config('crud.'.$this->route);
 
-        foreach ($config as $key => $value) {
-            $this->$key = $value;
+        if (is_array($config)) {
+            foreach ($config as $key => $value) {
+                $this->$key = $value;
+            }
         }
     }
 
