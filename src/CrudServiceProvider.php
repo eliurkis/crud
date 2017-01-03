@@ -43,6 +43,6 @@ class CrudServiceProvider extends ServiceProvider
         Route::resource($name, $controller, ['parameters' => [
             $name => 'id',
         ]]);
-        Route::get($name.'/{id}/delete', $controller.'@destroy')->name($name.'.delete');
+        Route::get($name.'/{id}/delete', $controller.'@destroy')->name($name.'.destroy');
     }
 }
