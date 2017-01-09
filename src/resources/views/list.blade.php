@@ -1,14 +1,14 @@
-@extends('templates/box')
+@extends('layouts.app')
 
-@section('page-title', isset($t['list_title']) ? $t['list_title'] : trans('eliurkis::crud.list_title'))
-
-@section('action-buttons')
-    @if (in_array('create', $buttons))
-    <a href="{{ $links['create'] }}" class="btn btn-primary"><i class="fa fa-plus-circle"></i> {{ $t['new'] or trans('eliurkis::crud.new') }}</a>
-    @endif
-@stop
-
-@section('box-content')
+@section('content')
+    <h2 class="sub-header">
+        {{ $t['list_title'] or trans('eliurkis::crud.list_title') }}
+        @if (in_array('create', $buttons))
+            <a href="{{ $links['create'] }}" class="btn btn-primary pull-right">
+                <i class="fa fa-plus-circle"></i> {{ $t['new'] or trans('eliurkis::crud.new') }}
+            </a>
+        @endif
+    </h2>
     <div class="row">
         <div class="col-sm-4 m-b-xs">
             @foreach($htmlFilters as $filter=>$html)
@@ -34,7 +34,7 @@
         </div>
         @endif
     </div>
-    <div class="{{ $route }}-module">
+    <div class="table-responsive {{ $route }}-module">
         <table id="table-data" class="footable table table-striped table-hover" data-page-size="20">
             <thead>
             <tr>
@@ -62,7 +62,11 @@
                     @endforeach
                     <td class="action-buttons" nowrap>
                         <a href="{{ route($route.'.edit', $row->id) }}" class="btn-primary btn btn-xs edit_element"><i class="fa fa-pencil-square-o"></i> edit</a>
-                        <a href="{{ route($route.'.delete', $row->id) }}" class="btn-danger btn btn-xs delete_element" onclick="return confirm('{{ $t['confirmation_delete'] or trans('eliurkis::crud.confirmation_delete') }}');"><i class="fa fa-trash-o"></i> delete</a>
+                        <a href="{{ route($route.'.destroy', $row->id) }}"
+                           class="btn-danger btn btn-xs delete_element"
+                           onclick="return confirm('{{ $t['confirmation_delete'] or trans('eliurkis::crud.confirmation_delete') }}');">
+                            <i class="fa fa-trash-o"></i> delete
+                        </a>
                     </td>
                 </tr>
             @empty
