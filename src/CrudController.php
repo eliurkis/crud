@@ -203,7 +203,11 @@ class CrudController extends Controller
 
         if (count($this->queryFilters)) {
             foreach ($this->queryFilters as $field => $value) {
-                $entity = $entity->where($field, $value);
+                if (is_array($value)) {
+                    $entity = $entity->whereIn($field, $value);
+                } else {
+                    $entity = $entity->where($field, $value);
+                }
             }
         }
 
