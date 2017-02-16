@@ -2,11 +2,11 @@
 
 namespace Eliurkis\Crud;
 
-use DB;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Database\QueryException;
+use DB;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\QueryException;
+use Illuminate\Http\Request;
 
 class CrudController extends Controller
 {
@@ -71,7 +71,7 @@ class CrudController extends Controller
         $entity = $this->search($entity, $request);
 
         // Order By
-        if ($this->orderBy) {
+        if (!empty($this->orderBy)) {
             foreach ($this->orderBy as $column => $direction) {
                 $entity = $entity->orderBy($column, $direction);
             }
@@ -139,7 +139,7 @@ class CrudController extends Controller
 
     public function edit($id)
     {
-        if (! $this->entityInstance) {
+        if (!$this->entityInstance) {
             $this->entityInstance = $this->entity->findOrFail($id);
         }
 
@@ -287,7 +287,7 @@ class CrudController extends Controller
         if ($request->get('q') != '') {
             $searchableCols = isset($this->searchable['columns']) ? $this->searchable['columns'] : $this->searchable;
 
-            $entity = $entity->where(function (Builder $query) use ($request, $searchableCols) {
+            $entity = $entity->where(function(Builder $query) use ($request, $searchableCols) {
                 foreach ($searchableCols as $field) {
                     $query->orWhere($field, 'like', '%'.$request->get('q').'%');
                 }
@@ -361,7 +361,7 @@ class CrudController extends Controller
         $links = ['index', 'create', 'store'];
 
         foreach ($links as $link) {
-            if (! isset($this->links[$link])) {
+            if (!isset($this->links[$link])) {
                 $this->links[$link] = route($this->route.'.'.$link);
             }
         }
@@ -405,7 +405,7 @@ class CrudController extends Controller
         $config['cols'] = isset($config['cols']) ? $config['cols'] : 1;
 
         // Get foreign values
-        if (! count($config['options']) && isset($config['entity'])) {
+        if (!count($config['options']) && isset($config['entity'])) {
             $config['options'] = $config['entity']::get()
                 ->lists($config['field_value'], $config['field_key'])
                 ->toArray();
@@ -437,7 +437,7 @@ class CrudController extends Controller
     protected function prepareField($name, $properties = [])
     {
         // Init
-        if (! $properties) {
+        if (empty($properties)) {
             $properties = $this->fields[$name];
         }
 
@@ -454,7 +454,7 @@ class CrudController extends Controller
 
         // Define field type class namespace
         $className = '\Eliurkis\Crud\FieldTypes\\'.ucfirst($properties['type']);
-        if (! class_exists($className)) {
+        if (!class_exists($className)) {
             return;
         }
 
