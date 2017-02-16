@@ -24,6 +24,8 @@ class CrudController extends Controller
     protected $searchable = [];
     protected $filters = [];
     protected $queryFilters = [];
+    protected $orderBy = [];
+    protected $orderByRaw = null;
     protected $filterRequire = [];
     protected $textsGeneral = [
         'list_title'   => 'Contents',
@@ -58,8 +60,7 @@ class CrudController extends Controller
         $entity = $this->entity;
 
         // Relation Fields
-        $belongToFields = $this->getBelongToFields();
-        if (count($belongToFields)) {
+        if ($belongToFields = $this->getBelongToFields()) {
             $entity = $this->entity->with($belongToFields);
         }
 
@@ -68,6 +69,17 @@ class CrudController extends Controller
 
         // Search
         $entity = $this->search($entity, $request);
+
+        // Order By
+        if ($this->orderBy) {
+            foreach ($this->orderBy as $column => $direction) {
+                $entity = $entity->orderBy($column, $direction);
+            }
+        }
+
+        if ($this->orderByRaw) {
+            $entity = $entity->orderByRaw($this->orderByRaw);
+        }
 
         // Pagination
         $rows = $this->paginate > 0 ? $this->paginate($entity, $request) : $entity->get();
@@ -203,7 +215,11 @@ class CrudController extends Controller
 
         if (count($this->queryFilters)) {
             foreach ($this->queryFilters as $field => $value) {
-                $entity = $entity->where($field, $value);
+                if (is_array($value)) {
+                    $entity = $entity->whereIn($field, $value);
+                } else {
+                    $entity = $entity->where($field, $value);
+                }
             }
         }
 
