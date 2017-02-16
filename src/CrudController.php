@@ -71,7 +71,7 @@ class CrudController extends Controller
         $entity = $this->search($entity, $request);
 
         // Order By
-        if ($this->orderBy) {
+        if (!empty($this->orderBy)) {
             foreach ($this->orderBy as $column => $direction) {
                 $entity = $entity->orderBy($column, $direction);
             }
@@ -437,7 +437,7 @@ class CrudController extends Controller
     protected function prepareField($name, $properties = [])
     {
         // Init
-        if (!$properties) {
+        if (empty($properties)) {
             $properties = $this->fields[$name];
         }
 
