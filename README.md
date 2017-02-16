@@ -12,10 +12,16 @@ A Laravel CRUD Generator.
 
 ## Install
 
-Via Composer
+Require this package with composer using the following command:
 
 ``` bash
 $ composer require eliurkis/crud
+```
+
+After updating composer, add the service provider to the `providers` array in `config/app.php`
+
+```php
+Eliurkis\Crud\CrudServiceProvider::class,
 ```
 
 ## Testing
