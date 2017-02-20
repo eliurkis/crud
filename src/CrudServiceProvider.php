@@ -35,7 +35,15 @@ class CrudServiceProvider extends ServiceProvider
     public function register()
     {
         include __DIR__.'/routes.php';
+
+        // Register provider dependencies
         $this->app->register(\Collective\Html\HtmlServiceProvider::class);
+
+        // Register aliases dependencies
+        $loader = \Illuminate\Foundation\AliasLoader::getInstance();
+        $loader->alias('Form', \Collective\Html\FormFacade::class);
+        $loader->alias('Html', \Collective\Html\HtmlFacade::class);
+        $loader->alias('Carbon', \Carbon\Carbon::class);
     }
 
     public static function resource($name, $controller)

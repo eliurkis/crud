@@ -55,14 +55,18 @@
                             @else
                                 {{ $row->{$fields[$name]['config']['rel']}->{$fields[$name]['config']['field_value']} or 'N/A' }}
                             @endif
+                        @elseif ($fields[$name]['type'] == 'date')
+                            {{ $row->$name->diff(Carbon::now())->format('%y') != date('Y') ?  $row->$name->format('m/d/Y') : 'N/A' }}
+                        @elseif ($fields[$name]['type'] == 'datetime')
+                            {{ $row->$name->diff(Carbon::now())->format('%y') != date('Y') ?  $row->$name->format('m/d/Y h:ia') : 'N/A' }}
                         @else
                             {{ $row->$name or 'N/A' }}
                         @endif
                         </td>
                     @endforeach
                     <td class="action-buttons" nowrap>
-                        <a href="{{ route($route.'.edit', $row->id) }}" class="btn-primary btn btn-xs edit_element"><i class="fa fa-pencil-square-o"></i> edit</a>
-                        <a href="{{ route($route.'.destroy', $row->id) }}"
+                        <a href="{{ route($route.'.edit', $row->{$row->getKeyName()}) }}" class="btn-primary btn btn-xs edit_element"><i class="fa fa-pencil-square-o"></i> edit</a>
+                        <a href="{{ route($route.'.destroy', $row->{$row->getKeyName()}) }}"
                            class="btn-danger btn btn-xs delete_element"
                            onclick="return confirm('{{ $t['confirmation_delete'] or trans('eliurkis::crud.confirmation_delete') }}');">
                             <i class="fa fa-trash-o"></i> delete
