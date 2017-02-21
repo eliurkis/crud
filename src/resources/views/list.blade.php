@@ -82,8 +82,8 @@
             @if ($paginate)
             <tfoot>
                 <tr>
-                    <td colspan="8">
-                        <ul class="pagination pull-right">{!! $rows->links() !!}</ul>
+                    <td colspan="{{ count($columns) + 1 }}" class="text-center">
+                        <ul class="pagination">{!! $rows->links() !!}</ul>
                     </td>
                 </tr>
             </tfoot>
