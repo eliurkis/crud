@@ -56,9 +56,9 @@
                                 {{ $row->{$fields[$name]['config']['rel']}->{$fields[$name]['config']['field_value']} or 'N/A' }}
                             @endif
                         @elseif ($fields[$name]['type'] == 'date')
-                            {{ $row->$name->diff(Carbon::now())->format('%y') != date('Y') ?  $row->$name->format('m/d/Y') : 'N/A' }}
+                            {{ !empty($row->$name) && $row->$name->diff(Carbon::now())->format('%y') != date('Y') ?  $row->$name->format('m/d/Y') : 'N/A' }}
                         @elseif ($fields[$name]['type'] == 'datetime')
-                            {{ $row->$name->diff(Carbon::now())->format('%y') != date('Y') ?  $row->$name->format('m/d/Y h:ia') : 'N/A' }}
+                            {{ !empty($row->$name) && $row->$name->diff(Carbon::now())->format('%y') != date('Y') ?  $row->$name->format('m/d/Y h:ia') : 'N/A' }}
                         @else
                             {{ $row->$name or 'N/A' }}
                         @endif
