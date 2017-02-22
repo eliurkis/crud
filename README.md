@@ -30,6 +30,10 @@ Eliurkis\Crud\CrudServiceProvider::class,
 $ composer test
 ```
 
+## Usage Example
+
+Here you can find a repository with an example project using CRUD: https://github.com/eliurkis/crud-example
+
 ## Contributing
 
 Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
