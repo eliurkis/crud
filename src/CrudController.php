@@ -407,7 +407,7 @@ class CrudController extends Controller
         // Get foreign values
         if (!count($config['options']) && isset($config['entity'])) {
             $config['options'] = $config['entity']::get()
-                ->lists($config['field_value'], $config['field_key'])
+                ->pluck($config['field_value'], $config['field_key'])
                 ->toArray();
         }
 
@@ -462,7 +462,7 @@ class CrudController extends Controller
             $properties = $this->prepareRelationalFields($name);
 
             if ($properties['type'] == 'foreign' && $this->entityInstance) {
-                $value = $this->entityInstance->{$config['rel']}->lists('id')->toArray();
+                $value = $this->entityInstance->{$config['rel']}->pluck('id')->toArray();
             }
 
             if ($properties['type'] == 'select') {

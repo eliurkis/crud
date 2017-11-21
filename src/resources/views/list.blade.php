@@ -2,7 +2,7 @@
 
 @section('content')
     <h2 class="sub-header">
-        {{ $t['list_title'] or trans('eliurkis::crud.list_title') }}
+        {!! $t['list_title'] or trans('eliurkis::crud.list_title') !!}
         @if (in_array('create', $buttons))
             <a href="{{ $links['create'] }}" class="btn btn-primary pull-right">
                 <i class="fa fa-plus-circle"></i> {{ $t['new'] or trans('eliurkis::crud.new') }}
