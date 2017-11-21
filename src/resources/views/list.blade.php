@@ -39,7 +39,7 @@
             <thead>
             <tr>
                 @foreach($columns as $name)
-                    <th class="field--{{ $name }}">{{ $fields[$name]['label'] or $name }}</th>
+                    <th class="field--{{ $name }}">{{ $fields[$name]['label'] or title_case(preg_replace("/[^A-Za-z0-9 ]/", ' ', $name)) }}</th>
                 @endforeach
                 <th class="no-sort action-buttons" nowrap>{{ trans('eliurkis::crud.action') }}</th>
             </tr>
@@ -49,7 +49,9 @@
                 <tr>
                     @foreach($columns as $name)
                         <td>
-                        @if ($fields[$name]['type'] == 'select')
+                        @if (!isset($fields[$name]))
+                            {{ $row->$name or 'N/A' }}
+                        @elseif ($fields[$name]['type'] == 'select')
                             @if (isset($fields[$name]['config']['options']) && count($fields[$name]['config']['options']))
                                 {{ $fields[$name]['config']['options'][$row->$name] or 'N/A' }}
                             @else
