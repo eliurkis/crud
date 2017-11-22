@@ -44,7 +44,9 @@
                 @foreach($columns as $name)
                     <th class="field--{{ $name }}">{{ $fields[$name]['label'] or title_case(preg_replace("/[^A-Za-z0-9 ]/", ' ', $name)) }}</th>
                 @endforeach
-                <th class="no-sort action-buttons" nowrap>{{ trans('eliurkis::crud.action') }}</th>
+                @if ($listDisplay['action-buttons'])
+                    <th class="no-sort action-buttons" nowrap>{{ trans('eliurkis::crud.action') }}</th>
+                @endif
             </tr>
             </thead>
             <tbody>
@@ -69,14 +71,16 @@
                         @endif
                         </td>
                     @endforeach
-                    <td class="action-buttons" nowrap>
-                        <a href="{{ route($route.'.edit', $row->{$row->getKeyName()}) }}" class="btn-primary btn btn-xs edit_element"><i class="fa fa-pencil-square-o"></i> edit</a>
-                        <a href="{{ route($route.'.destroy', $row->{$row->getKeyName()}) }}"
-                           class="btn-danger btn btn-xs delete_element"
-                           onclick="return confirm('{{ $t['confirmation_delete'] or trans('eliurkis::crud.confirmation_delete') }}');">
-                            <i class="fa fa-trash-o"></i> delete
-                        </a>
-                    </td>
+                    @if ($listDisplay['action-buttons'])
+                        <td class="action-buttons" nowrap>
+                            <a href="{{ route($route.'.edit', $row->{$row->getKeyName()}) }}" class="btn-primary btn btn-xs edit_element"><i class="fa fa-pencil-square-o"></i> edit</a>
+                            <a href="{{ route($route.'.destroy', $row->{$row->getKeyName()}) }}"
+                               class="btn-danger btn btn-xs delete_element"
+                               onclick="return confirm('{{ $t['confirmation_delete'] or trans('eliurkis::crud.confirmation_delete') }}');">
+                                <i class="fa fa-trash-o"></i> delete
+                            </a>
+                        </td>
+                    @endif
                 </tr>
             @empty
                 <tr>

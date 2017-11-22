@@ -41,6 +41,9 @@ class CrudController extends Controller
         'col-md-10',
     ];
     protected $links = [];
+    protected $listDisplay = [
+        'action-buttons' => true,
+    ];
 
     public function __construct($entity, $config = [])
     {
@@ -95,6 +98,7 @@ class CrudController extends Controller
             ->with('paginate', $this->paginate)
             ->with('t', $this->texts)
             ->with('htmlFilters', $this->htmlFilters)
+            ->with('listDisplay', $this->listDisplay)
             ->with('links', $this->prepareLinks())
             ->with('request', $request)
             ->with('route', $this->route);
@@ -287,7 +291,7 @@ class CrudController extends Controller
         if ($request->get('q') != '') {
             $searchableCols = isset($this->searchable['columns']) ? $this->searchable['columns'] : $this->searchable;
 
-            $entity = $entity->where(function(Builder $query) use ($request, $searchableCols) {
+            $entity = $entity->where(function (Builder $query) use ($request, $searchableCols) {
                 foreach ($searchableCols as $field) {
                     $query->orWhere($field, 'like', '%'.$request->get('q').'%');
                 }
