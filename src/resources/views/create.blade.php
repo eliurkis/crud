@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@section('page-title')
+    {!! $t[$type.'_title'] or trans('eliurkis::crud.'.$type.'_title') !!}
+@stop
+
 @section('content')
     @if (isset($data))
         {!! Form::model($data, ['route' => [$route.'.update', $data->id], 'class' => 'form-horizontal', 'id' => 'frm-'.$route.'-update']) !!}
@@ -7,7 +11,6 @@
     @else
         {!! Form::open(['route' => [$route.'.store'], 'class' => 'form-horizontal', 'id' => 'frm-'.$route.'-store']) !!}
     @endif
-    <h2 class="sub-header">{{ $t[$type.'_title'] or trans('eliurkis::crud.'.$type.'_title') }}</h2>
     <div id="form-manage" class="row">
         @foreach ($fields as $name => $field)
             <div class="{{ $formColsClasses[0] }} fieldtype_{{ $field['type'] }} fieldname_{{ $name }}">
