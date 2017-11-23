@@ -437,6 +437,8 @@ class CrudController extends Controller
             $this->fields[$name]['html'] = $this->prepareField($name, $properties);
             $this->fields[$name]['value'] = $this->entityInstance->$name ?? null;
         }
+
+        return $this->fields;
     }
 
     protected function prepareField($name, $properties = [])
