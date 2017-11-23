@@ -435,6 +435,7 @@ class CrudController extends Controller
 
         foreach ($this->fields as $name => $properties) {
             $this->fields[$name]['html'] = $this->prepareField($name, $properties);
+            $this->fields[$name]['value'] = $this->entityInstance->$name ?? null;
         }
     }
 
