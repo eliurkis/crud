@@ -117,6 +117,17 @@ class CrudController extends Controller
             ->with('fields', $this->fields);
     }
 
+    private function manageFiles($row, $request)
+    {
+        foreach ($this->fields as $fieldName => $field) {
+            if ($field['type'] === 'file') {
+                $row->addMedia($request->file($fieldName))
+                    ->withCustomProperties(['route' => $this->route])
+                    ->toMediaCollection($field['media_collection']);
+            }
+        }
+    }
+
     public function store(Request $request)
     {
         $this->validateRequest($request);
@@ -126,7 +137,9 @@ class CrudController extends Controller
         try {
             $row = $this->entity->create(array_merge($request->all(), $this->queryFilters));
             $this->updateForeignRelations($row, $request);
+            $this->manageFiles($row, $request);
         } catch (QueryException $e) {
+            \Log::error($e);
             return redirect()
                 ->back()
                 ->with('error', 'Ha ocurrido un error, intente nuevamente');
@@ -174,7 +187,9 @@ class CrudController extends Controller
                 )
             );
             $this->updateForeignRelations($row, $request);
+            $this->manageFiles($row, $request);
         } catch (QueryException $e) {
+            \Log::error($e);
             return redirect()
                 ->back()
                 ->with('error', 'Ha ocurrido un error, intente nuevamente');

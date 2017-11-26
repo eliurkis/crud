@@ -6,10 +6,10 @@
 
 @section('content')
     @if (isset($data))
-        {!! Form::model($data, ['route' => [$route.'.update', $data->id], 'class' => 'form-horizontal', 'id' => 'frm-'.$route.'-update']) !!}
+        {!! Form::model($data, ['route' => [$route.'.update', $data->id], 'class' => 'form-horizontal', 'id' => 'frm-'.$route.'-update', 'files' => true]) !!}
         {!! method_field('put') !!}
     @else
-        {!! Form::open(['route' => [$route.'.store'], 'class' => 'form-horizontal', 'id' => 'frm-'.$route.'-store']) !!}
+        {!! Form::open(['route' => [$route.'.store'], 'class' => 'form-horizontal', 'id' => 'frm-'.$route.'-store', 'files' => true]) !!}
     @endif
     <div id="form-manage" class="row">
         @foreach ($fields as $name => $field)
