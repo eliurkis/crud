@@ -140,6 +140,9 @@ class CrudController extends Controller
             $this->manageFiles($row, $request);
         } catch (QueryException $e) {
             \Log::error($e);
+            if (config('app.debug')) {
+                throw new \Exception($e);
+            }
             return redirect()
                 ->back()
                 ->with('error', 'Ha ocurrido un error, intente nuevamente');
@@ -190,6 +193,9 @@ class CrudController extends Controller
             $this->manageFiles($row, $request);
         } catch (QueryException $e) {
             \Log::error($e);
+            if (config('app.debug')) {
+                throw new \Exception($e);
+            }
             return redirect()
                 ->back()
                 ->with('error', 'Ha ocurrido un error, intente nuevamente');
@@ -438,7 +444,7 @@ class CrudController extends Controller
         }
 
         if (isset($config['pre_options'])) {
-            $config['options'] = array_merge($config['pre_options'], $config['options']);
+            $config['options'] = $config['pre_options'] + $config['options'];
         }
 
         $this->fields[$name]['config'] = $config;
