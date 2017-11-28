@@ -437,6 +437,10 @@ class CrudController extends Controller
             ], $config['options']);
         }
 
+        if (isset($config['pre_options'])) {
+            $config['options'] = array_merge($config['pre_options'], $config['options']);
+        }
+
         $this->fields[$name]['config'] = $config;
 
         return $this->fields[$name];
