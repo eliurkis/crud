@@ -120,7 +120,7 @@ class CrudController extends Controller
     private function manageFiles($row, $request)
     {
         foreach ($this->fields as $fieldName => $field) {
-            if ($field['type'] === 'file') {
+            if ($field['type'] === 'file' && $request->file($fieldName)) {
                 $row->addMedia($request->file($fieldName))
                     ->withCustomProperties(['route' => $this->route])
                     ->toMediaCollection($field['media_collection']);
