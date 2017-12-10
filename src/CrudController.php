@@ -117,7 +117,7 @@ class CrudController extends Controller
             ->with('fields', $this->fields);
     }
 
-    private function manageFiles($row, $request)
+    protected function manageFiles($row, $request)
     {
         foreach ($this->fields as $fieldName => $field) {
             if ($field['type'] === 'file' && $request->file($fieldName)) {
