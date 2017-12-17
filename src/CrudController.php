@@ -7,6 +7,7 @@ use DB;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 class CrudController extends Controller
 {
@@ -386,7 +387,7 @@ class CrudController extends Controller
         $links = ['index', 'create', 'store'];
 
         foreach ($links as $link) {
-            if (!isset($this->links[$link])) {
+            if (!isset($this->links[$link]) && Route::has($this->route.'.'.$link)) {
                 $this->links[$link] = route($this->route.'.'.$link);
             }
         }
