@@ -28,10 +28,10 @@
             <div class="form-group">
                 <div class="text-center">
                     <button class="btn btn-primary" type="submit" style="margin-right: 10px;">
-                        <i class="fa fa-check"></i> {{ $t['save'] or trans('eliurkis::crud.save') }}
+                        <i class="fas fa-check"></i> {{ $t['save'] or trans('eliurkis::crud.save') }}
                     </button>
                     <a href="{{ $links['index'] }}" class="btn btn-default">
-                        <i class="fa fa-remove"></i> {{ $t['cancel'] or trans('eliurkis::crud.cancel') }}
+                        <i class="fas fa-times"></i> {{ $t['cancel'] or trans('eliurkis::crud.cancel') }}
                     </a>
                 </div>
             </div>
