@@ -29,5 +29,12 @@
             "Eliurkis\\Crud\\Test\\": "tests"
         }
     },
-    "minimum-stability": "stable"
+    "minimum-stability": "stable",
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Eliurkis\\Crud\\CrudServiceProvider"
+            ]
+        }
+    }
 }
