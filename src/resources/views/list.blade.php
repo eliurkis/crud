@@ -88,7 +88,7 @@
                 </tr>
             @endforelse
             </tbody>
-            @if ($paginate)
+            @if ($rows && $paginate)
                 <tfoot>
                 <tr>
                     <td colspan="{{ count($columns) + 1 }}" class="text-center">

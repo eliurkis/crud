@@ -9,7 +9,28 @@ trait CrudDataTable
 {
     protected $dataTableActivated = true;
 
-    public function index_source(Request $request)
+    public function indexDataTable(Request $request)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            return $this->indexDataTableResults($request);
+        }
+
+        return view('crud::list-datatable')
+            ->with('rows', [])
+            ->with('fields', $this->fields)
+            ->with('columns', $this->columns)
+            ->with('searchable', $this->searchable)
+            ->with('buttons', $this->buttons)
+            ->with('paginate', $this->paginate)
+            ->with('t', $this->texts)
+            ->with('htmlFilters', $this->htmlFilters)
+            ->with('listDisplay', $this->listDisplay)
+            ->with('request', $request)
+            ->with('orderBy', $this->orderBy)
+            ->with('route', $this->route);
+    }
+
+    public function indexDataTableResults(Request $request)
     {
         list($colSortBy, $colOrderBy) = $this->getSortInformation($this->columns, $request);
         list($totalRows, $totalRowsFiltered) = $this->getRowsTotals($request->get('search')['value'] ?? null);

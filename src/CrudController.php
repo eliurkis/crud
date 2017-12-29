@@ -61,6 +61,11 @@ class CrudController extends Controller
 
     public function index(Request $request)
     {
+        // If DataTable is activated
+        if (isset($this->dataTableActivated)) {
+            return $this->indexDataTable($request);
+        }
+
         $entity = $this->entity;
 
         // Relation Fields
