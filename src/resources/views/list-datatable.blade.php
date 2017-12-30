@@ -1,4 +1,4 @@
-@extends('app')
+@extends('layouts.app')
 
 @section('page-title')
     {!! $t['list_title'] or trans('eliurkis::crud.list_title') !!}
