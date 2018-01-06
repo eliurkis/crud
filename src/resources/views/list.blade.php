@@ -73,6 +73,9 @@
                     @endforeach
                     @if ($listDisplay['action-buttons'])
                         <td class="action-buttons" nowrap>
+                            @if (in_array('show', $buttons))
+                                <a href="{{ route($route.'.show', $row->{$row->getKeyName()}) }}" class="btn-default btn btn-xs"><i class="fas fa-eye"></i> show</a>
+                            @endif
                             <a href="{{ route($route.'.edit', $row->{$row->getKeyName()}) }}" class="btn-primary btn btn-xs edit_element"><i class="far fa-edit"></i> edit</a>
                             <a href="{{ route($route.'.destroy', $row->{$row->getKeyName()}) }}"
                                class="btn-danger btn btn-xs delete_element"

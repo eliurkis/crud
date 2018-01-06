@@ -8,9 +8,11 @@ return [
     'edit'                => 'Editar',
     'go'                  => 'Ir',
     'reset'               => 'Resetear',
+    'go_back'             => 'Regresar',
 
     /* Titles */
     'list_title'          => 'Listado de Elementos',
+    'show_title'          => 'Detalles de Elemento',
     'create_title'        => 'Crear Elemento',
     'edit_title'          => 'Editar Elemento',
 

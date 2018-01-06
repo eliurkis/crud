@@ -17,6 +17,7 @@ class CrudController extends Controller
     protected $fields = [];
     protected $columns = [];
     protected $buttons = [
+        'show',
         'create',
         'edit',
         'delete',
@@ -108,6 +109,23 @@ class CrudController extends Controller
             ->with('links', $this->prepareLinks())
             ->with('request', $request)
             ->with('route', $this->route);
+    }
+
+    public function show($id)
+    {
+        if (!$this->entityInstance) {
+            $this->entityInstance = $this->entity->findOrFail($id);
+        }
+
+        $this->prepareFields();
+
+        return view('crud::show')
+            ->with('type', 'show')
+            ->with('route', $this->route)
+            ->with('t', $this->texts)
+            ->with('fields', $this->fields)
+            ->with('formColsClasses', $this->formColsClasses)
+            ->with('data', $this->entityInstance);
     }
 
     public function create()
@@ -467,9 +485,38 @@ class CrudController extends Controller
         foreach ($this->fields as $name => $properties) {
             $this->fields[$name]['html'] = $this->prepareField($name, $properties);
             $this->fields[$name]['value'] = $this->entityInstance->$name ?? null;
+            $this->fields[$name]['value_text'] = $this->prepareFieldShow($name, $properties);
         }
 
         return $this->fields;
+    }
+
+    protected function prepareFieldShow($name, $properties = [])
+    {
+        // Init
+        if (empty($properties)) {
+            $properties = $this->fields[$name];
+        }
+
+        $this->fields[$name]['config'] = isset($properties['config']) ? $properties['config'] : [];
+        $this->fields[$name]['attributes'] = isset($properties['attributes']) ? $properties['attributes'] : [];
+        $config = $this->fields[$name]['config'];
+
+        $value = $this->entityInstance
+            ? ($this->entityInstance->$name ?? null)
+            : (isset($config['default_value']) ? $config['default_value'] : null);
+
+        if ($this->entityInstance) {
+            if (isset($config['entity'])) {
+                $value = isset($this->entityInstance->{$config['rel']}->{$config['field_value']})
+                    ? $this->entityInstance->{$config['rel']}->{$config['field_value']}
+                    : null;
+            } elseif (isset($config['options']) && count($config['options'])) {
+                $value = $config['options'][$value] ?? null;
+            }
+        }
+
+        return empty($value) ? 'N/A' : $value;
     }
 
     protected function prepareField($name, $properties = [])
@@ -500,7 +547,7 @@ class CrudController extends Controller
             $properties = $this->prepareRelationalFields($name);
 
             if ($properties['type'] == 'foreign' && $this->entityInstance) {
-                $value = $this->entityInstance->{$config['rel']}->pluck('id')->toArray();
+                $value = $this->entityInstance->{$config['rel']}->pluck($config['field_key'])->toArray();
             }
 
             if ($properties['type'] == 'select') {
