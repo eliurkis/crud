@@ -73,15 +73,19 @@
                     @endforeach
                     @if ($listDisplay['action-buttons'])
                         <td class="action-buttons" nowrap>
-                            @if (in_array('show', $buttons))
+                            @if (Route::has($route.'.show'))
                                 <a href="{{ route($route.'.show', $row->{$row->getKeyName()}) }}" class="btn-default btn btn-xs"><i class="fas fa-eye"></i> show</a>
                             @endif
-                            <a href="{{ route($route.'.edit', $row->{$row->getKeyName()}) }}" class="btn-primary btn btn-xs edit_element"><i class="far fa-edit"></i> edit</a>
+                            @if (Route::has($route.'.edit'))
+                                <a href="{{ route($route.'.edit', $row->{$row->getKeyName()}) }}" class="btn-primary btn btn-xs edit_element"><i class="far fa-edit"></i> edit</a>
+                            @endif
+                            @if (Route::has($route.'.destroy'))
                             <a href="{{ route($route.'.destroy', $row->{$row->getKeyName()}) }}"
                                class="btn-danger btn btn-xs delete_element"
                                onclick="return confirm('{{ $t['confirmation_delete'] or trans('eliurkis::crud.confirmation_delete') }}');">
                                 <i class="far fa-trash-alt"></i> delete
                             </a>
+                            @endif
                         </td>
                     @endif
                 </tr>
