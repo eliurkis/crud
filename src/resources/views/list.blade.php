@@ -66,6 +66,10 @@
                                 {{ !empty($row->$name) && $row->$name->diff(Carbon::now())->format('%y') != date('Y') ?  $row->$name->format('m/d/Y') : 'N/A' }}
                             @elseif ($fields[$name]['type'] == 'datetime' && is_object($row->$name))
                                 {{ !empty($row->$name) && $row->$name->diff(Carbon::now())->format('%y') != date('Y') ?  $row->$name->format('m/d/Y h:ia') : 'N/A' }}
+                            @elseif ($fields[$name]['type'] == 'file' && $row->getFirstMedia($name))
+                                <a href="{{ route($route.'.download', [$row->id, $name]) }}" target="_blank">
+                                    {!! isset($fields[$name]['link_name'])? $fields[$name]['link_name'] : 'download' !!}
+                                </a>
                             @else
                                 {{ $row->$name or 'N/A' }}
                             @endif
@@ -80,11 +84,11 @@
                                 <a href="{{ route($route.'.edit', $row->{$row->getKeyName()}) }}" class="btn-primary btn btn-xs edit_element"><i class="far fa-edit"></i> edit</a>
                             @endif
                             @if (Route::has($route.'.destroy'))
-                            <a href="{{ route($route.'.destroy', $row->{$row->getKeyName()}) }}"
-                               class="btn-danger btn btn-xs delete_element"
-                               onclick="return confirm('{{ $t['confirmation_delete'] or trans('eliurkis::crud.confirmation_delete') }}');">
-                                <i class="far fa-trash-alt"></i> delete
-                            </a>
+                                <a href="{{ route($route.'.destroy', $row->{$row->getKeyName()}) }}"
+                                   class="btn-danger btn btn-xs delete_element"
+                                   onclick="return confirm('{{ $t['confirmation_delete'] or trans('eliurkis::crud.confirmation_delete') }}');">
+                                    <i class="far fa-trash-alt"></i> delete
+                                </a>
                             @endif
                         </td>
                     @endif
