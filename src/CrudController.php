@@ -146,8 +146,8 @@ class CrudController extends Controller
         foreach ($this->fields as $fieldName => $field) {
             if ($field['type'] === 'file' && $request->file($fieldName)) {
                 $row->addMedia($request->file($fieldName))
-                    ->withCustomProperties(['route' => $this->route])
-                    ->toMediaCollection($field['media_collection']);
+                    ->withCustomProperties(['route' => $this->route, 'field' => $fieldName])
+                    ->toMediaCollection($fieldName);
             }
         }
     }
@@ -243,6 +243,15 @@ class CrudController extends Controller
             ->with('success', isset($this->textsGeneral['delete_action'])
                 ? $this->textsGeneral['delete_action']
                 : trans('eliurkis::crud.delete_action'));
+    }
+
+    public function download($id, $fieldName)
+    {
+        if (!$this->entityInstance) {
+            $this->entityInstance = $this->entity->findOrFail($id);
+        }
+
+        return $this->entityInstance->getFirstMedia($fieldName);
     }
 
     /* Private Actions */
@@ -507,6 +516,15 @@ class CrudController extends Controller
             : (isset($config['default_value']) ? $config['default_value'] : null);
 
         if ($this->entityInstance) {
+            if ($properties['type'] === 'file' && $this->entityInstance->getFirstMedia($name)) {
+                $value = '<a href="'.route($this->route.'.download', [$this->entityInstance->id, $name]).
+                    '" target="_blank">'.(
+                    isset($this->fields[$name]['link_name'])
+                        ? $this->fields[$name]['link_name']
+                        : 'download'
+                    ).'</a>';
+            }
+
             if (isset($config['entity'])) {
                 $value = isset($this->entityInstance->{$config['rel']}->{$config['field_value']})
                     ? $this->entityInstance->{$config['rel']}->{$config['field_value']}
