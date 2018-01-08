@@ -5,7 +5,7 @@
 @stop
 
 @section('content')
-    <div id="form-manage" class="row">
+    <div id="form-manage" class="row form-horizontal">
         @foreach ($fields as $name => $field)
             <div class="{{ $formColsClasses[0] }} fieldtype_{{ $field['type'] }} fieldname_{{ $name }}">
                 <div class="form-group">
