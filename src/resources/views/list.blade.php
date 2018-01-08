@@ -66,7 +66,7 @@
                                 {{ !empty($row->$name) && $row->$name->diff(Carbon::now())->format('%y') != date('Y') ?  $row->$name->format('m/d/Y') : 'N/A' }}
                             @elseif ($fields[$name]['type'] == 'datetime' && is_object($row->$name))
                                 {{ !empty($row->$name) && $row->$name->diff(Carbon::now())->format('%y') != date('Y') ?  $row->$name->format('m/d/Y h:ia') : 'N/A' }}
-                            @elseif ($fields[$name]['type'] == 'file' && $row->getFirstMedia($name))
+                            @elseif ($fields[$name]['type'] == 'file' && $row->getMedia($name)->last())
                                 <a href="{{ route($route.'.download', [$row->id, $name]) }}" target="_blank">
                                     {!! isset($fields[$name]['link_name'])? $fields[$name]['link_name'] : 'download' !!}
                                 </a>

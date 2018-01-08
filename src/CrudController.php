@@ -251,7 +251,15 @@ class CrudController extends Controller
             $this->entityInstance = $this->entity->findOrFail($id);
         }
 
-        return $this->entityInstance->getFirstMedia($fieldName);
+        $media = $this->entityInstance->getMedia($fieldName)->last();
+
+        if (config('medialibrary.default_filesystem') === 's3') {
+            $tempImage = tempnam(sys_get_temp_dir(), $media->file_name);
+            copy($media->getTemporaryUrl(\Carbon::now()->addMinutes(5)), $tempImage);
+            return response()->file($tempImage, ['Content-Type' => $media->mime_type]);
+        }
+
+        return $media;
     }
 
     /* Private Actions */
@@ -516,7 +524,7 @@ class CrudController extends Controller
             : (isset($config['default_value']) ? $config['default_value'] : null);
 
         if ($this->entityInstance) {
-            if ($properties['type'] === 'file' && $this->entityInstance->getFirstMedia($name)) {
+            if ($properties['type'] === 'file' && $this->entityInstance->getMedia($name)->last()) {
                 $value = '<a href="'.route($this->route.'.download', [$this->entityInstance->id, $name]).
                     '" target="_blank">'.(
                     isset($this->fields[$name]['link_name'])
