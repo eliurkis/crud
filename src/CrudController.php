@@ -253,7 +253,7 @@ class CrudController extends Controller
 
         $media = $this->entityInstance->getMedia($fieldName)->last();
 
-        if (config('medialibrary.default_filesystem') === 's3') {
+        if ($media && $media->disk === 's3') {
             $tempImage = tempnam(sys_get_temp_dir(), $media->file_name);
             copy($media->getTemporaryUrl(\Carbon::now()->addMinutes(5)), $tempImage);
             return response()->file($tempImage, ['Content-Type' => $media->mime_type]);
