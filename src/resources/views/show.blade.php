@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('page-title')
-    {!! $t[$type.'_title'] or trans('eliurkis::crud.'.$type.'_title') !!}
+    {!! isset($t[$type.'_title']) ? __($t[$type.'_title']) : trans('eliurkis::crud.'.$type.'_title') !!}
 @stop
 
 @section('content')
@@ -9,7 +9,7 @@
         @foreach ($fields as $name => $field)
             <div class="{{ $formColsClasses[0] }} fieldtype_{{ $field['type'] }} fieldname_{{ $name }}">
                 <div class="form-group">
-                    <label class="{{ $formColsClasses[1] }} control-label">{{ $field['label'] or $name }}</label>
+                    <label class="{{ $formColsClasses[1] }} control-label">{{ isset($field['label']) ? __($field['label']) : __(title_case(preg_replace("/[^A-Za-z0-9 ]/", ' ', $name))) }}</label>
                     <div class="{{ $formColsClasses[2] }}">
                         <p class="form-control-static">{!! $field['value_text'] !!}</p>
                     </div>
@@ -22,7 +22,7 @@
             <div class="form-group">
                 <div class="text-center">
                     <a href="{{ route($route.'.index') }}" class="btn btn-default">
-                        <i class="fas fa-arrow-left"></i> {{ $t['go_back'] or trans('eliurkis::crud.go_back') }}
+                        <i class="fas fa-arrow-left"></i> {{ isset($t['go_back']) ? __($t['go_back']) : trans('eliurkis::crud.go_back') }}
                     </a>
                 </div>
             </div>

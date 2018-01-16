@@ -16,7 +16,7 @@
         <thead>
         <tr>
             @foreach($columns as $name)
-                <th class="field--{{ $name }}">{{ $fields[$name]['label'] or title_case(preg_replace("/[^A-Za-z0-9 ]/", ' ', $name)) }}</th>
+                <th class="field--{{ $name }}">{{ isset($fields[$name]['label']) ? __($fields[$name]['label']) : __(title_case(preg_replace("/[^A-Za-z0-9 ]/", ' ', $name))) }}</th>
             @endforeach
             @if ($listDisplay['action-buttons'])
                 <th class="no-sort action-buttons" nowrap>{{ trans('eliurkis::crud.action') }}</th>

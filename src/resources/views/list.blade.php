@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
 @section('page-title')
-    {!! $t['list_title'] or trans('eliurkis::crud.list_title') !!}
+    {!! isset($t['list_title']) ? __($t['list_title']) : trans('eliurkis::crud.list_title') !!}
 @stop
 
 @section('content')
     <h2 class="sub-header">
         @if (in_array('create', $buttons))
             <a href="{{ $links['create'] }}" class="btn btn-primary pull-right">
-                <i class="fas fa-plus-circle"></i> {{ $t['new'] or trans('eliurkis::crud.new') }}
+                <i class="fas fa-plus-circle"></i> {{ isset($t['new']) ? __($t['new']) : trans('eliurkis::crud.new') }}
             </a>
         @endif
     </h2>
@@ -42,7 +42,7 @@
             <thead>
             <tr>
                 @foreach($columns as $name)
-                    <th class="field--{{ $name }}">{{ $fields[$name]['label'] or title_case(preg_replace("/[^A-Za-z0-9 ]/", ' ', $name)) }}</th>
+                    <th class="field--{{ $name }}">{{ isset($fields[$name]['label']) ? __($fields[$name]['label']) : __(title_case(preg_replace("/[^A-Za-z0-9 ]/", ' ', $name))) }}</th>
                 @endforeach
                 @if ($listDisplay['action-buttons'])
                     <th class="no-sort action-buttons" nowrap>{{ trans('eliurkis::crud.action') }}</th>
@@ -95,7 +95,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="{{ count($columns) + 1 }}" class="text-center">{{ $t['no_data'] or trans('eliurkis::crud.no_data') }}</td>
+                    <td colspan="{{ count($columns) + 1 }}" class="text-center">{{ isset($t['no_data']) ? __($t['no_data']) : trans('eliurkis::crud.no_data') }}</td>
                 </tr>
             @endforelse
             </tbody>
