@@ -524,6 +524,19 @@ class CrudController extends Controller
             : (isset($config['default_value']) ? $config['default_value'] : null);
 
         if ($this->entityInstance) {
+            if (($properties['type'] === 'date' || $properties['type'] === 'datetime') &&
+                $this->entityInstance->$name != '') {
+                $fieldValue = $this->entityInstance->$name;
+
+                if (!is_object($fieldValue)) {
+                    $fieldValue = Carbon::parse($this->entityInstance->$name);
+                }
+
+                $value = $fieldValue->diff(Carbon::now())->format('%y') != date('Y')
+                    ? $fieldValue->format($properties['type'] === 'date' ? 'm/d/Y' : 'm/d/Y h:ia')
+                    : null;
+            }
+
             if ($properties['type'] === 'file' && $this->entityInstance->getMedia($name)->last()) {
                 $value = '<a href="'.route($this->route.'.download', [$this->entityInstance->id, $name]).
                     '" target="_blank">'.(
