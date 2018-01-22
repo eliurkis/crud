@@ -257,7 +257,7 @@ class CrudController extends Controller
             event($this->route.'.destroy', [$row]);
         } catch (ModelNotFoundException $e) {
             return redirect()
-                ->back()
+                ->route($this->route.'.index')
                 ->with('error', __('The element that you are trying to delete does not exist'));
         } catch (\Exception $e) {
             \Log::error($e);
@@ -265,7 +265,7 @@ class CrudController extends Controller
                 throw new \Exception($e);
             }
             return redirect()
-                ->back()
+                ->route($this->route.'.index')
                 ->with('error', __('An error occurred, try again'));
         }
 
