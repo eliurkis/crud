@@ -146,8 +146,12 @@ class CrudController extends Controller
     {
         foreach ($this->fields as $fieldName => $field) {
             if ($field['type'] === 'file' && $request->file($fieldName)) {
+                $customProperties = ['route' => $this->route, 'field' => $fieldName];
+                if (isset($field['storage_path'])) {
+                    $customProperties['storage_path'] = $field['storage_path'];
+                }
                 $row->addMedia($request->file($fieldName))
-                    ->withCustomProperties(['route' => $this->route, 'field' => $fieldName])
+                    ->withCustomProperties($customProperties)
                     ->toMediaCollection($fieldName);
             }
         }
