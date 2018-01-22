@@ -42,7 +42,7 @@
             <thead>
             <tr>
                 @foreach($columns as $name)
-                    <th class="field--{{ $name }}">{{ isset($fields[$name]['label']) ? __($fields[$name]['label']) : __(title_case(preg_replace("/[^A-Za-z0-9 ]/", ' ', $name))) }}</th>
+                    <th class="field--{{ $name }}">{!! isset($fields[$name]['label']) ? __($fields[$name]['label']) : __(title_case(preg_replace("/[^A-Za-z0-9 ]/", ' ', $name))) !!}</th>
                 @endforeach
                 @if ($listDisplay['action-buttons'])
                     <th class="no-sort action-buttons" nowrap>{{ trans('eliurkis::crud.action') }}</th>
@@ -55,7 +55,7 @@
                     @foreach($columns as $name)
                         <td>
                             @if (!isset($fields[$name]))
-                                {{ $row->$name or 'N/A' }}
+                                {!! $row->$name or 'N/A' !!}
                             @elseif ($fields[$name]['type'] == 'select')
                                 @if (isset($fields[$name]['config']['options']) && count($fields[$name]['config']['options']))
                                     {{ $fields[$name]['config']['options'][$row->$name] or 'N/A' }}
@@ -71,7 +71,7 @@
                                     {!! isset($fields[$name]['link_name'])? $fields[$name]['link_name'] : 'download' !!}
                                 </a>
                             @else
-                                {{ $row->$name or 'N/A' }}
+                                {!! $row->$name or 'N/A' !!}
                             @endif
                         </td>
                     @endforeach
