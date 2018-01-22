@@ -5,6 +5,7 @@ namespace Eliurkis\Crud;
 use App\Http\Controllers\Controller;
 use DB;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -144,17 +145,21 @@ class CrudController extends Controller
 
     protected function manageFiles($row, $request)
     {
+        $mediaFiles = [];
+
         foreach ($this->fields as $fieldName => $field) {
             if ($field['type'] === 'file' && $request->file($fieldName)) {
                 $customProperties = ['route' => $this->route, 'field' => $fieldName];
                 if (isset($field['storage_path'])) {
                     $customProperties['storage_path'] = $field['storage_path'];
                 }
-                $row->addMedia($request->file($fieldName))
+                $mediaFiles[] = $row->addMedia($request->file($fieldName))
                     ->withCustomProperties($customProperties)
                     ->toMediaCollection($fieldName);
             }
         }
+
+        return $mediaFiles;
     }
 
     public function store(Request $request)
@@ -166,7 +171,7 @@ class CrudController extends Controller
         try {
             $row = $this->entity->create(array_merge($request->all(), $this->queryFilters));
             $this->updateForeignRelations($row, $request);
-            $this->manageFiles($row, $request);
+            $mediaFiles = $this->manageFiles($row, $request);
         } catch (QueryException $e) {
             \Log::error($e);
             if (config('app.debug')) {
@@ -178,6 +183,8 @@ class CrudController extends Controller
         }
 
         DB::commit();
+
+        event($this->route.'.store', [$row, $mediaFiles]);
 
         return redirect()
             ->route($this->route.'.index')
@@ -219,7 +226,7 @@ class CrudController extends Controller
                 )
             );
             $this->updateForeignRelations($row, $request);
-            $this->manageFiles($row, $request);
+            $mediaFiles = $this->manageFiles($row, $request);
         } catch (QueryException $e) {
             \Log::error($e);
             if (config('app.debug')) {
@@ -232,6 +239,8 @@ class CrudController extends Controller
 
         DB::commit();
 
+        event($this->route.'.update', [$row, $mediaFiles]);
+
         return redirect()
             ->route($this->route.'.index', $this->getParamsFilters($row))
             ->with('success', isset($this->textsGeneral['save_action'])
@@ -241,7 +250,24 @@ class CrudController extends Controller
 
     public function destroy($id)
     {
-        $this->entity->destroy($id);
+        try {
+            $row = $this->entity->findOrFail($id);
+            $row->delete();
+
+            event($this->route.'.destroy', [$row]);
+        } catch (ModelNotFoundException $e) {
+            return redirect()
+                ->back()
+                ->with('error', __('The element that you are trying to delete does not exist'));
+        } catch (\Exception $e) {
+            \Log::error($e);
+            if (config('app.debug')) {
+                throw new \Exception($e);
+            }
+            return redirect()
+                ->back()
+                ->with('error', __('An error occurred, try again'));
+        }
 
         return redirect()
             ->route($this->route.'.index')
