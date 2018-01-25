@@ -96,6 +96,15 @@ class CrudController extends Controller
         // Pagination
         $rows = $this->paginate > 0 ? $this->paginate($entity, $request) : $entity->get();
 
+        // Sort By Rows
+        if (!empty($this->sortBy)) {
+            foreach ($this->sortBy as $column => $direction) {
+                $rows = strtolower($direction) == 'desc'
+                    ? $rows->sortByDesc($column)
+                    : $rows->sortBy($column);
+            }
+        }
+
         // HTML Filters
         $this->htmlFilters();
 
