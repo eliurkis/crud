@@ -173,7 +173,7 @@ class CrudController extends Controller
 
     public function store(Request $request)
     {
-        $this->validateRequest($request);
+        $this->validateRequest($request, 'store');
 
         DB::beginTransaction();
 
@@ -222,7 +222,7 @@ class CrudController extends Controller
 
     public function update(Request $request, $id)
     {
-        $this->validateRequest($request);
+        $this->validateRequest($request, 'update');
 
         DB::beginTransaction();
 
@@ -477,8 +477,9 @@ class CrudController extends Controller
 
     /**
      * @param Request $request
+     * @param         $type
      */
-    protected function validateRequest($request)
+    protected function validateRequest($request, $type)
     {
         $validations = [
             'rules'            => [],
@@ -487,8 +488,15 @@ class CrudController extends Controller
         ];
 
         foreach ($this->fields as $field => $options) {
-            if (isset($options['validation'])) {
-                $validations['rules'][$field] = $options['validation'];
+            $validation = null;
+            if (isset($options['validation'][$type])) {
+                $validation = $options['validation'][$type];
+            } elseif (isset($options['validation']) && is_string($options['validation'])) {
+                $validation = $options['validation'];
+            }
+
+            if ($validation != '') {
+                $validations['rules'][$field] = $validation;
                 $validations['customAttributes'][$field] = $options['label'];
             }
         }
