@@ -6,14 +6,16 @@
 
 @section('content')
     <div id="form-manage" class="row form-horizontal">
-        @foreach ($fields as $name => $field)
-            <div class="{{ $formColsClasses[0] }} fieldtype_{{ $field['type'] }} fieldname_{{ $name }}">
-                <div class="form-group">
-                    <label class="{{ $formColsClasses[1] }} control-label">{{ isset($field['label']) ? __($field['label']) : __(title_case(preg_replace("/[^A-Za-z0-9 ]/", ' ', $name))) }}</label>
-                    <div class="{{ $formColsClasses[2] }}">
-                        <p class="form-control-static">{!! $field['value_text'] !!}</p>
+        @foreach ($fieldsGroup as $fields)
+            <div class="col-md-{{ 12 / $colsNumber }}">
+                @foreach ($fields as $name => $field)
+                    <div class="form-group fieldtype_{{ $field['type'] }} fieldname_{{ $name }}">
+                        <label class="{{ $formColsClasses[1] }} control-label">{{ isset($field['label']) ? __($field['label']) : __(title_case(preg_replace("/[^A-Za-z0-9 ]/", ' ', $name))) }}</label>
+                        <div class="{{ $formColsClasses[2] }}">
+                            <p class="form-control-static">{!! $field['value_text'] !!}</p>
+                        </div>
                     </div>
-                </div>
+                @endforeach
             </div>
         @endforeach
     </div>

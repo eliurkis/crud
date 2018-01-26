@@ -44,6 +44,11 @@ class CrudController extends Controller
         'col-md-2',
         'col-md-10',
     ];
+    protected $formCols = [
+        'show'   => 2,
+        'create' => 2,
+        'edit'   => 2,
+    ];
     protected $links = [];
     protected $listDisplay = [
         'action-buttons' => true,
@@ -134,8 +139,10 @@ class CrudController extends Controller
             ->with('type', 'show')
             ->with('route', $this->route)
             ->with('t', $this->texts)
-            ->with('fields', $this->fields)
             ->with('formColsClasses', $this->formColsClasses)
+            ->with('colsNumber', $this->formCols['show'])
+            ->with('fieldsGroup', collect($this->fields)->split($this->formCols['show']))
+            ->with('fields', $this->fields)
             ->with('data', $this->entityInstance);
     }
 
@@ -149,6 +156,8 @@ class CrudController extends Controller
             ->with('t', $this->texts)
             ->with('formColsClasses', $this->formColsClasses)
             ->with('links', $this->prepareLinks())
+            ->with('colsNumber', $this->formCols['create'])
+            ->with('fieldsGroup', collect($this->fields)->split($this->formCols['create']))
             ->with('fields', $this->fields);
     }
 
@@ -214,9 +223,11 @@ class CrudController extends Controller
             ->with('type', 'edit')
             ->with('route', $this->route)
             ->with('t', $this->texts)
-            ->with('fields', $this->fields)
             ->with('formColsClasses', $this->formColsClasses)
             ->with('links', $this->prepareLinks())
+            ->with('colsNumber', $this->formCols['edit'])
+            ->with('fieldsGroup', collect($this->fields)->split($this->formCols['edit']))
+            ->with('fields', $this->fields)
             ->with('data', $this->entityInstance);
     }
 

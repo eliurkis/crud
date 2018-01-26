@@ -11,15 +11,17 @@
     @else
         {!! Form::open(['route' => [$route.'.store'], 'class' => 'form-horizontal', 'id' => 'frm-'.$route.'-store', 'files' => true]) !!}
     @endif
-    <div id="form-manage" class="row">
-        @foreach ($fields as $name => $field)
-            <div class="{{ $formColsClasses[0] }} fieldtype_{{ $field['type'] }} fieldname_{{ $name }}">
-                <div class="form-group">
-                    <label class="{{ $formColsClasses[1] }} control-label">{{ isset($field['label']) ? __($field['label']) : __(title_case(preg_replace("/[^A-Za-z0-9 ]/", ' ', $name))) }}</label>
-                    <div class="{{ $formColsClasses[2] }}">
-                        {!! $field['html'] !!}
+    <div id="form-manage row">
+        @foreach ($fieldsGroup as $fields)
+            <div class="col-md-{{ 12 / $colsNumber }}">
+                @foreach ($fields as $name => $field)
+                    <div class="form-group fieldtype_{{ $field['type'] }} fieldname_{{ $name }}">
+                        <label class="{{ $formColsClasses[1] }} control-label">{{ isset($field['label']) ? __($field['label']) : __(title_case(preg_replace("/[^A-Za-z0-9 ]/", ' ', $name))) }}</label>
+                        <div class="{{ $formColsClasses[2] }}">
+                            {!! $field['html'] !!}
+                        </div>
                     </div>
-                </div>
+                @endforeach
             </div>
         @endforeach
     </div>
