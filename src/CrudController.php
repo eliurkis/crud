@@ -635,7 +635,7 @@ class CrudController extends Controller
             ? isset($properties['value_alias'])
                 ? $this->entityInstance->{$properties['value_alias']}
                 : $this->entityInstance->$name
-            : (isset($config['default_value']) ? $config['default_value'] : null);
+            : ($this->fields[$name]['default_value'] ?? null);
 
         // Define field type class namespace
         $className = '\Eliurkis\Crud\FieldTypes\\'.ucfirst($properties['type']);
