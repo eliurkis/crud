@@ -638,7 +638,7 @@ class CrudController extends Controller
             : ($this->fields[$name]['default_value'] ?? null);
 
         // Define field type class namespace
-        $className = '\Eliurkis\Crud\FieldTypes\\'.ucfirst($properties['type']);
+        $className = '\Eliurkis\Crud\FieldTypes\\'.studly_case($properties['type']);
         if (!class_exists($className)) {
             return;
         }
