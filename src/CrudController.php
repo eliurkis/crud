@@ -166,7 +166,7 @@ class CrudController extends Controller
         $mediaFiles = [];
 
         foreach ($this->fields as $fieldName => $field) {
-            if ($field['type'] === 'file' && $request->file($fieldName)) {
+            if (substr($field['type'], 0, 4) === 'file' && $request->file($fieldName)) {
                 $customProperties = ['route' => $this->route, 'field' => $fieldName];
                 if (isset($field['storage_path'])) {
                     $customProperties['storage_path'] = $field['storage_path'];
@@ -596,7 +596,7 @@ class CrudController extends Controller
                     : null;
             }
 
-            if ($properties['type'] === 'file' && $this->entityInstance->getMedia($name)->last()) {
+            if (substr($properties['type'], 0, 4) === 'file' && $this->entityInstance->getMedia($name)->last()) {
                 $value = '<a href="'.route($this->route.'.download', [$this->entityInstance->id, $name]).
                     '" target="_blank">'.(
                     isset($this->fields[$name]['link_name'])
