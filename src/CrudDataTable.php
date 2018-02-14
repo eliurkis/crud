@@ -25,6 +25,7 @@ trait CrudDataTable
             ->with('t', $this->texts)
             ->with('htmlFilters', $this->htmlFilters)
             ->with('listDisplay', $this->listDisplay)
+            ->with('links', $this->prepareLinks())
             ->with('request', $request)
             ->with('orderBy', $this->orderBy)
             ->with('route', $this->route);
