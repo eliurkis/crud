@@ -71,7 +71,7 @@
                                     {!! isset($fields[$name]['link_name'])? $fields[$name]['link_name'] : 'download' !!}
                                 </a>
                             @else
-                                {!! $row->$name or 'N/A' !!}
+                                {!! !empty($row->$name) ? nl2br($row->$name) : 'N/A' !!}
                             @endif
                         </td>
                     @endforeach
