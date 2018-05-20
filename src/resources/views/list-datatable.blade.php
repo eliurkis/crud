@@ -50,7 +50,7 @@
                     ],
                     'columns': [
                         @foreach ($columns as $col)
-                        {'data': '{{ $col }}'},
+                        {'data': 'values.{{ $col }}'},
                         @endforeach
                         {
                             'data': function (row) {
