@@ -135,8 +135,8 @@ trait CrudDataTable
                 $query = $key === 0
                     ? $query->where($field, 'like', '%'.$searchValue.'%')
                     : $query->orWhere($field, 'like', '%'.$searchValue.'%');
-
             }
+
             return $query;
         });
     }

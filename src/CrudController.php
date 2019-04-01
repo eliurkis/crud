@@ -217,6 +217,7 @@ class CrudController extends Controller
             if (config('app.debug')) {
                 throw new \Exception($e);
             }
+
             return redirect()
                 ->back()
                 ->with('error', 'Ha ocurrido un error, intente nuevamente');
@@ -274,6 +275,7 @@ class CrudController extends Controller
             if (config('app.debug')) {
                 throw new \Exception($e);
             }
+
             return redirect()
                 ->back()
                 ->with('error', 'Ha ocurrido un error, intente nuevamente');
@@ -306,6 +308,7 @@ class CrudController extends Controller
             if (config('app.debug')) {
                 throw new \Exception($e);
             }
+
             return redirect()
                 ->route($this->route.'.index')
                 ->with('error', __('An error occurred, try again'));
@@ -329,6 +332,7 @@ class CrudController extends Controller
         if ($media && $media->disk === 's3') {
             $tempImage = tempnam(sys_get_temp_dir(), $media->file_name);
             copy($media->getTemporaryUrl(\Carbon::now()->addMinutes(5)), $tempImage);
+
             return response()->file($tempImage, ['Content-Type' => $media->mime_type]);
         }
 
