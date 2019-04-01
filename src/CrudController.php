@@ -53,6 +53,7 @@ class CrudController extends Controller
     protected $listDisplay = [
         'action-buttons' => true,
     ];
+    protected $customActions = [];
 
     public function __construct($entity, $config = [])
     {
@@ -124,6 +125,7 @@ class CrudController extends Controller
             ->with('listDisplay', $this->listDisplay)
             ->with('links', $this->prepareLinks())
             ->with('request', $request)
+            ->with('customActions', $this->customActions)
             ->with('route', $this->route);
     }
 

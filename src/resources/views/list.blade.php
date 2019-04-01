@@ -90,6 +90,9 @@
                                     <i class="far fa-trash-alt"></i> delete
                                 </a>
                             @endif
+                            @foreach($customActions as $actionCallback)
+                                {!! $actionCallback($row) !!}
+                            @endforeach
                         </td>
                     @endif
                 </tr>
