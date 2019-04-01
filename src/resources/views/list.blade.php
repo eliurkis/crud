@@ -44,7 +44,7 @@
                 @foreach($columns as $name)
                     <th class="field--{{ $name }}">{!! isset($fields[$name]['label']) ? __($fields[$name]['label']) : __(title_case(preg_replace("/[^A-Za-z0-9 ]/", ' ', $name))) !!}</th>
                 @endforeach
-                @if ($listDisplay['action-buttons'])
+                @if ($actions)
                     <th class="no-sort action-buttons" nowrap>{{ trans('eliurkis::crud.action') }}</th>
                 @endif
             </tr>
@@ -75,23 +75,10 @@
                             @endif
                         </td>
                     @endforeach
-                    @if ($listDisplay['action-buttons'])
+                    @if ($actions)
                         <td class="action-buttons" nowrap>
-                            @if (Route::has($route.'.show'))
-                                <a href="{{ route($route.'.show', $row->{$row->getKeyName()}) }}" class="btn-default btn btn-xs"><i class="fas fa-eye"></i></a>
-                            @endif
-                            @if (Route::has($route.'.edit'))
-                                <a href="{{ route($route.'.edit', $row->{$row->getKeyName()}) }}" class="btn-primary btn btn-xs edit_element"><i class="far fa-edit"></i></a>
-                            @endif
-                            @if (Route::has($route.'.destroy'))
-                                <a href="{{ route($route.'.destroy', $row->{$row->getKeyName()}) }}"
-                                   class="btn-danger btn btn-xs delete_element"
-                                   onclick="return confirm('{{ $t['confirmation_delete'] or trans('eliurkis::crud.confirmation_delete') }}');">
-                                    <i class="far fa-trash-alt"></i>
-                                </a>
-                            @endif
-                            @foreach($customActions as $actionCallback)
-                                {!! $actionCallback($row) !!}
+                            @foreach($actions as $actionCallback)
+                                {!! $actionCallback($row, $route) !!}
                             @endforeach
                         </td>
                     @endif

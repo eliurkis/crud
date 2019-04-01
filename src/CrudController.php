@@ -53,7 +53,7 @@ class CrudController extends Controller
     protected $listDisplay = [
         'action-buttons' => true,
     ];
-    protected $customActions = [];
+    protected $actions = [];
 
     public function __construct($entity, $config = [])
     {
@@ -66,6 +66,26 @@ class CrudController extends Controller
                 $this->$key = $value;
             }
         }
+
+        $this->actions = [
+            'details' => function ($row, $route) {
+                return '<a href="'.route($route.'.show', $row->{$row->getKeyName()}).'" class="btn-default btn btn-xs">
+                            <i class="fas fa-eye"></i>
+                        </a>';
+            },
+            'edit'    => function ($row, $route) {
+                return '<a href="'.route($route.'.edit', $row->{$row->getKeyName()}).'" class="btn-primary btn btn-xs edit_element">
+                            <i class="far fa-edit"></i>
+                        </a>';
+            },
+            'delete'  => function ($row, $route) {
+                return '<a href="'.route($route.'.destroy', $row->{$row->getKeyName()}).'"
+                           class="btn-danger btn btn-xs delete_element"
+                           onclick="return confirm(\''.trans('eliurkis::crud.confirmation_delete').'\');">
+                            <i class="far fa-trash-alt"></i>
+                        </a>';
+            },
+        ];
     }
 
     public function index(Request $request)
@@ -125,7 +145,7 @@ class CrudController extends Controller
             ->with('listDisplay', $this->listDisplay)
             ->with('links', $this->prepareLinks())
             ->with('request', $request)
-            ->with('customActions', $this->customActions)
+            ->with('actions', $this->actions)
             ->with('route', $this->route);
     }
 
